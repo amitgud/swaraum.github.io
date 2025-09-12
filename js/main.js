@@ -119,12 +119,25 @@ function loadConcerts() {
         return;
     }
     
+    // Show loading state
+    const concertsContainer = document.getElementById('concerts-container');
+    concertsContainer.innerHTML = '<div class="loading">Loading upcoming shows...</div>';
+    
+    // Build the API URL
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
     
     fetch(url)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(() => {
+                    throw new Error('Error loading concert data');
+                });
+            }
+            return response.json();
+        })
         .then(data => {
             const concertsContainer = document.getElementById('concerts-container');
+            
             if (!data.values || data.values.length === 0) {
                 concertsContainer.innerHTML = '<p>No upcoming shows scheduled. Check back soon!</p>';
                 return;
@@ -209,10 +222,19 @@ function createConcertCard(concert) {
         poster.className = 'concert-poster';
         poster.loading = 'lazy';
         
-        // Create the image URL with the Google Drive file ID and API key
-        const imageUrl = `https://www.googleapis.com/drive/v3/files/${concert.posterUrl.trim()}?alt=media&key=${CONFIG.API_KEY}`;
+        const fileId = concert.posterUrl.trim();
+        const imageUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${CONFIG.API_KEY}`;
+        
         poster.src = imageUrl;
         poster.alt = `${concert.title} Concert Poster`;
+        
+        poster.onerror = () => {
+            // Fallback to placeholder if image fails to load
+            const placeholder = document.createElement('div');
+            placeholder.className = 'concert-poster placeholder';
+            placeholder.innerHTML = '<i class="fas fa-music"></i>';
+            card.replaceChild(placeholder, poster);
+        };
         
         // Add click event for modal
         poster.addEventListener('click', (e) => {
