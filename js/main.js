@@ -376,5 +376,66 @@ function lazyLoadImages() {
     lazyImages.forEach(img => imageObserver.observe(img));
 }
 
+// Load band members from Google Sheets
+function loadBandMembers() {
+    const membersContainer = document.getElementById('band-members');
+    if (!membersContainer) return;
+
+    // Use the same config as concerts for now, but you might want to use a different sheet
+    const { API_KEY: apiKey, SHEET_ID: spreadsheetId } = CONFIG;
+    const range = 'BandMembers!A2:C'; // Assuming BandMembers sheet with columns: name, skill, profile_pic
+    
+    if (!apiKey || !spreadsheetId) {
+        membersContainer.innerHTML = '<p>Error loading band members. Configuration missing.</p>';
+        return;
+    }
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.values || data.values.length === 0) {
+                membersContainer.innerHTML = '<p>No band members found.</p>';
+                return;
+            }
+            
+            membersContainer.innerHTML = ''; // Clear loading message
+            
+            data.values.forEach(memberData => {
+                const [name, skill, profilePic] = memberData;
+                
+                const memberElement = document.createElement('div');
+                memberElement.className = 'band-member';
+                
+                // Create the avatar image
+                const avatar = document.createElement('img');
+                avatar.className = 'member-avatar';
+                avatar.src = profilePic || 'images/default-avatar.png';
+                avatar.alt = name;
+                avatar.loading = 'lazy';
+                
+                // Create the info overlay
+                const info = document.createElement('div');
+                info.className = 'member-info';
+                info.innerHTML = `
+                    <div class="member-name">${name}</div>
+                    <div class="member-skill">${skill}</div>
+                `;
+                
+                memberElement.appendChild(avatar);
+                memberElement.appendChild(info);
+                membersContainer.appendChild(memberElement);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading band members:', error);
+            membersContainer.innerHTML = '<p>Error loading band members. Please try again later.</p>';
+        });
+}
+
 // Initialize lazy loading when the page loads
-window.addEventListener('load', lazyLoadImages);
+window.addEventListener('load', function() {
+    lazyLoadImages();
+    loadBandMembers(); // Load band members when page loads
+});

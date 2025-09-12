@@ -196,13 +196,13 @@ img {
 /* About Section */
 .about-content {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 50px;
+    flex-direction: column;
+    gap: 40px;
 }
 
 .about-text {
+    max-width: 800px;
+    margin: 0 auto;
     flex: 1;
     min-width: 300px;
     padding-right: 40px;
@@ -211,6 +211,96 @@ img {
 .about-text p {
     margin-bottom: 20px;
     line-height: 1.8;
+}
+
+/* Band Members Grid */
+.band-members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    padding: 30px 0;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.band-member {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    perspective: 1000px;
+}
+
+.member-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    transition: transform 0.6s, box-shadow 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.member-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    opacity: 0;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
+    transition: all 0.6s ease;
+    text-align: center;
+}
+
+.band-member:hover .member-avatar {
+    transform: rotateY(180deg);
+}
+
+.band-member:hover .member-info {
+    transform: rotateY(0);
+    opacity: 1;
+}
+
+.member-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.member-skill {
+    font-size: 0.8rem;
+    color: var(--primary-color);
+}
+
+.loading-members {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 20px;
+    color: var(--text-light);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .band-members-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 20px;
+    }
+    
+    .band-member {
+        width: 100px;
+        height: 100px;
+    }
 }
 
 .band-members {
