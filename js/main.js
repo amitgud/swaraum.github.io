@@ -130,34 +130,135 @@ function loadConcerts() {
                 return;
             }
             
-            let concertsHTML = '';
-            data.values.forEach(concert => {
-                // Assuming the columns are: Date, Title, Location, Image URL
-                const [date, title, location, imageUrl] = concert;
+            // Clear loading message
+            concertsContainer.innerHTML = '';
+            
+            // Process each concert and create cards
+            data.values.forEach(concertData => {
+                // Assuming the columns are: Date, Time, Title, Description, Venue, City, Ticket Link, Poster URL
+                const [date, time, title, description, venue, city, ticketLink, posterId] = concertData;
                 
-                concertsHTML += `
-                    <div class="concert-card">
-                        <div class="concert-image" style="background-image: url('${imageUrl || 'images/concert-default.jpg'}')"></div>
-                        <div class="concert-info">
-                            <span class="concert-date">${formatDate(date)}</span>
-                            <h3>${title}</h3>
-                            <div class="concert-location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>${location}</span>
-                            </div>
-                            <a href="#" class="btn">Get Tickets</a>
-                        </div>
-                    </div>
-                `;
+                const concert = {
+                    date,
+                    time,
+                    title: title || 'Untitled Event',
+                    description: description || '',
+                    venue: venue || '',
+                    city: city || '',
+                    ticketLink: ticketLink || '#',
+                    posterUrl: posterId || ''
+                };
+                
+                // Create and append concert card
+                const card = createConcertCard(concert);
+                concertsContainer.appendChild(card);
             });
             
-            concertsContainer.innerHTML = concertsHTML;
+            // Add modal for poster display if it doesn't exist
+            let modal = document.getElementById('posterModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'posterModal';
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <span class="close">&times;</span>
+                    <img class="modal-content" id="modalImage">
+                `;
+                document.body.appendChild(modal);
+                
+                // Function to close the modal
+                const closeModal = () => {
+                    modal.style.display = 'none';
+                    modal.classList.remove('show');
+                    document.body.style.overflow = ''; // Restore body scroll
+                };
+                
+                // Close modal when clicking the X
+                modal.querySelector('.close').addEventListener('click', closeModal);
+                
+                // Close modal when clicking outside the image
+                modal.addEventListener('click', function(event) {
+                    if (event.target === modal) {
+                        closeModal();
+                    }
+                });
+                
+                // Close with Escape key
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape' && modal.classList.contains('show')) {
+                        closeModal();
+                    }
+                });
+            };
         })
         .catch(error => {
             console.error('Error loading concerts:', error);
             document.getElementById('concerts-container').innerHTML = 
                 '<p>Unable to load upcoming shows. Please check back later.</p>';
         });
+}
+
+// Create concert card element
+function createConcertCard(concert) {
+    const card = document.createElement('div');
+    card.className = 'concert-card';
+
+    // Create poster element
+    if (concert.posterUrl && concert.posterUrl.trim() !== '') {
+        const poster = document.createElement('img');
+        poster.className = 'concert-poster';
+        poster.loading = 'lazy';
+        
+        // Create the image URL with the Google Drive file ID and API key
+        const imageUrl = `https://www.googleapis.com/drive/v3/files/${concert.posterUrl.trim()}?alt=media&key=${CONFIG.API_KEY}`;
+        poster.src = imageUrl;
+        poster.alt = `${concert.title} Concert Poster`;
+        
+        // Add click event for modal
+        poster.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const modal = document.getElementById('posterModal');
+            const modalImg = document.getElementById('modalImage');
+            if (modal && modalImg) {
+                modal.style.display = 'flex';
+                modal.classList.add('show');
+                modalImg.src = poster.src;
+                modalImg.alt = poster.alt;
+                
+                // Prevent body scroll when modal is open
+                document.body.style.overflow = 'hidden';
+            }
+        });
+
+        poster.onerror = () => {
+            console.error('Failed to load image:', concert.posterUrl);
+            const placeholder = document.createElement('div');
+            placeholder.className = 'concert-poster placeholder';
+            placeholder.innerHTML = '<i class="fas fa-music"></i>';
+            card.replaceChild(placeholder, poster);
+        };
+        card.appendChild(poster);
+    } else {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'concert-poster placeholder';
+        placeholder.innerHTML = '<i class="fas fa-music"></i>';
+        card.appendChild(placeholder);
+    }
+
+    const details = document.createElement('div');
+    details.className = 'concert-details';
+    details.innerHTML = `
+        <div class="concert-date">${formatDate(concert.date)} ${concert.time || ''}</div>
+        <h3 class="concert-title">${concert.title}</h3>
+        ${concert.description ? `<div class="concert-description">${concert.description}</div>` : ''}
+        ${concert.venue ? `<div class="concert-venue">${concert.venue}</div>` : ''}
+        ${concert.city ? `<div class="concert-location"><i class="fas fa-map-marker-alt"></i> ${concert.city}</div>` : ''}
+        ${concert.ticketLink && concert.ticketLink !== '#' ? 
+            `<a href="${concert.ticketLink}" class="btn ticket-link" target="_blank" rel="noopener noreferrer">Get Tickets</a>` : ''}
+    `;
+    card.appendChild(details);
+
+    return card;
 }
 
 // Format date to a more readable format

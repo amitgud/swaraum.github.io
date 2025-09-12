@@ -284,6 +284,186 @@ img {
     padding: 20px;
 }
 
+/* Concert Cards */
+.concert-card {
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.concert-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.concert-poster {
+    width: 250px;
+    height: 300px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.concert-poster:hover {
+    opacity: 0.9;
+}
+
+.concert-poster.placeholder {
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 3rem;
+}
+
+.concert-details {
+    padding: 25px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.concert-date {
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+    align-self: flex-start;
+}
+
+.concert-title {
+    font-size: 1.5rem;
+    margin: 0 0 10px;
+    color: var(--dark-color);
+}
+
+.concert-description {
+    color: var(--text-light);
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.concert-venue {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.concert-location {
+    color: var(--text-light);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.concert-location i {
+    color: var(--primary-color);
+}
+
+.ticket-link {
+    margin-top: auto;
+    align-self: flex-start;
+    padding: 10px 25px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.ticket-link:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    overflow: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    animation: zoomIn 0.3s ease;
+}
+
+.close {
+    position: absolute;
+    top: 25px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close:hover {
+    color: #bbb;
+}
+
+@keyframes zoomIn {
+    from {transform: scale(0.8); opacity: 0;}
+    to {transform: scale(1); opacity: 1;}
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .concert-card {
+        flex-direction: column;
+    }
+    
+    .concert-poster {
+        width: 100%;
+        height: 250px;
+    }
+    
+    .concert-details {
+        padding: 20px;
+    }
+    
+    .modal-content {
+        max-width: 100%;
+    }
+    
+    .close {
+        top: 15px;
+        right: 25px;
+        font-size: 30px;
+    }
+}
+
+/* Existing styles */
 .concert-date {
     display: inline-block;
     background: var(--primary-color);
