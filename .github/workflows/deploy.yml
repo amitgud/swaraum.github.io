@@ -18,11 +18,16 @@ jobs:
       with:
         node-version: '16'
         
-    - name: Create env.js
+    - name: Create and copy env.js
       run: |
+        # Create env.js in the root directory
         echo "window._env_ = {
           GOOGLE_SHEETS_API_KEY: '${{ secrets.GOOGLE_SHEETS_API_KEY }}'
-        };" > public/env.js
+        };" > env.js
+        
+        # Also create it in the public directory for local testing
+        mkdir -p public
+        cp env.js public/
         
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4
