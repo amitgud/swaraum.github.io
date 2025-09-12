@@ -32,8 +32,8 @@ jobs:
           mkdir -p js
           cat > js/config.js << 'EOF'
           const CONFIG = {
-              SHEET_ID: '${{ secrets.GOOGLE_SHEETS_API_KEY }}',
-              API_KEY: '${{ secrets.GOOGLE_API_KEY }}',
+              SHEET_ID: '${{ secrets.GOOGLE_SHEET_ID }}',
+              API_KEY: '${{ secrets.GOOGLE_SHEETS_API_KEY }}',
               SHEET_RANGE: 'A2:D10',
               REFRESH_INTERVAL: 1800000,
               YOUTUBE: {
