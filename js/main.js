@@ -102,16 +102,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Load concerts from Google Sheets
 function loadConcerts() {
-    const spreadsheetId = '1tzNZXZGztqUshcVv1HnNL_ixzZYJEyp-b6bkNq5i5rg';
-    const range = 'A2:D10'; // Adjust the range as needed
-    
-    // Get API key from window._env_
-    const apiKey = window._env_ && window._env_.GOOGLE_SHEETS_API_KEY;
-    
-    if (!apiKey) {
-        console.error('Google Sheets API key is not configured');
+    // Check if config is loaded
+    if (typeof CONFIG === 'undefined') {
+        console.error('Configuration not loaded');
         document.getElementById('concerts-container').innerHTML = 
-            '<p>Unable to load concert data. API key is not configured.</p>';
+            '<p>Configuration error. Please try again later.</p>';
+        return;
+    }
+    
+    const { API_KEY: apiKey, SHEET_ID: spreadsheetId, SHEET_RANGE: range } = CONFIG;
+    
+    if (!apiKey || !spreadsheetId) {
+        console.error('Missing required configuration');
+        document.getElementById('concerts-container').innerHTML = 
+            '<p>Configuration error. Missing required parameters.</p>';
         return;
     }
     

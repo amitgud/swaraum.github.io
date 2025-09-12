@@ -121,3 +121,4 @@ public
 
 # Local environment variables
 env.js
+js/config.js
