@@ -1,0 +1,37 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]  # Change this to your default branch if it's not 'main'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        
+    - name: Create env.js
+      run: |
+        echo "window._env_ = {
+          GOOGLE_SHEETS_API_KEY: '${{ secrets.GOOGLE_SHEETS_API_KEY }}'
+        };" > public/env.js
+        
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: .
+        branch: gh-pages  # Or your GitHub Pages branch
+        clean: true
+        clean-exclude: |
+          CNAME
+          .nojekyll
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,253 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu toggle
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+    const links = document.querySelectorAll('.nav-links li');
+    
+    hamburger.addEventListener('click', () => {
+        // Animate Links
+        navLinks.classList.toggle('active');
+        
+        // Hamburger Animation
+        hamburger.classList.toggle('toggle');
+    });
+    
+    // Close mobile menu when clicking on a link
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            hamburger.classList.remove('toggle');
+        });
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.style.padding = '10px 0';
+            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+        } else {
+            navbar.style.padding = '15px 0';
+            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+        }
+    });
+    
+    // Set active link on scroll
+    const sections = document.querySelectorAll('section');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.offsetHeight;
+            if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        links.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+    
+    // Initialize Google Sheets for concerts
+    loadConcerts();
+    
+    // Initialize social media feeds
+    initializeSocialFeeds();
+    
+    // Contact form submission
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+            
+            // Here you would typically send the form data to a server
+            console.log('Form submitted:', formObject);
+            
+            // Show success message
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+    }
+});
+
+// Load concerts from Google Sheets
+function loadConcerts() {
+    const spreadsheetId = '1tzNZXZGztqUshcVv1HnNL_ixzZYJEyp-b6bkNq5i5rg';
+    const range = 'A2:D10'; // Adjust the range as needed
+    
+    // Get API key from window._env_
+    const apiKey = window._env_ && window._env_.GOOGLE_SHEETS_API_KEY;
+    
+    if (!apiKey) {
+        console.error('Google Sheets API key is not configured');
+        document.getElementById('concerts-container').innerHTML = 
+            '<p>Unable to load concert data. API key is not configured.</p>';
+        return;
+    }
+    
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const concertsContainer = document.getElementById('concerts-container');
+            if (!data.values || data.values.length === 0) {
+                concertsContainer.innerHTML = '<p>No upcoming shows scheduled. Check back soon!</p>';
+                return;
+            }
+            
+            let concertsHTML = '';
+            data.values.forEach(concert => {
+                // Assuming the columns are: Date, Title, Location, Image URL
+                const [date, title, location, imageUrl] = concert;
+                
+                concertsHTML += `
+                    <div class="concert-card">
+                        <div class="concert-image" style="background-image: url('${imageUrl || 'images/concert-default.jpg'}')"></div>
+                        <div class="concert-info">
+                            <span class="concert-date">${formatDate(date)}</span>
+                            <h3>${title}</h3>
+                            <div class="concert-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${location}</span>
+                            </div>
+                            <a href="#" class="btn">Get Tickets</a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            concertsContainer.innerHTML = concertsHTML;
+        })
+        .catch(error => {
+            console.error('Error loading concerts:', error);
+            document.getElementById('concerts-container').innerHTML = 
+                '<p>Unable to load upcoming shows. Please check back later.</p>';
+        });
+}
+
+// Format date to a more readable format
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+}
+
+// Initialize social media feeds
+function initializeSocialFeeds() {
+    // Instagram Feed
+    // Note: Instagram requires an access token and special API setup
+    // This is a placeholder that you'll need to replace with actual API calls
+    const instagramFeed = document.getElementById('instagram-feed');
+    if (instagramFeed) {
+        // Example of how you might load Instagram posts
+        // Replace with actual Instagram API implementation
+        instagramFeed.innerHTML = `
+            <div class="social-post">
+                <p>Follow us on <a href="https://www.instagram.com/swaraum" target="_blank">Instagram</a> to see our latest updates!</p>
+                <!-- Instagram posts will be loaded here via JavaScript -->
+            </div>
+        `;
+        
+        // Load Instagram posts here using Instagram Basic Display API
+        // You'll need to register your app at https://developers.facebook.com/
+    }
+    
+    // YouTube Feed
+    const youtubeFeed = document.getElementById('youtube-feed');
+    if (youtubeFeed) {
+        // Example of how you might load YouTube videos
+        // Replace with actual YouTube API implementation
+        youtubeFeed.innerHTML = `
+            <div class="youtube-video">
+                <div class="video-container">
+                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/VIDEO_ID" 
+                            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen></iframe>
+                </div>
+                <p>Check out our latest performance!</p>
+            </div>
+            <p>Subscribe to our <a href="https://www.youtube.com/channel/CHANNEL_ID" target="_blank">YouTube channel</a> for more videos.</p>
+        `;
+        
+        // Load YouTube videos here using YouTube Data API
+        // You'll need to get an API key from Google Cloud Console
+    }
+    
+    // TikTok Feed
+    const tiktokFeed = document.getElementById('tiktok-feed');
+    if (tiktokFeed) {
+        // TikTok embed example
+        // Note: TikTok requires special embedding or API access
+        tiktokFeed.innerHTML = `
+            <div class="tiktok-embed" style="max-width: 300px; margin: 0 auto;" 
+                 data-video-id="VIDEO_ID" 
+                 data-embed-from="embed" 
+                 data-embed-type="video">
+                <section>
+                    <a href="https://www.tiktok.com/@swaraum/video/VIDEO_ID" target="_blank">
+                        Watch on TikTok</a>
+                </section>
+            </div>
+            <p>Follow us on <a href="https://www.tiktok.com/@swaraum" target="_blank">TikTok</a> for short clips and behind-the-scenes!</p>
+        `;
+        
+        // Load TikTok script if not already loaded
+        if (!document.getElementById('tiktok-script')) {
+            const script = document.createElement('script');
+            script.id = 'tiktok-script';
+            script.src = 'https://www.tiktok.com/embed.js';
+            document.body.appendChild(script);
+        }
+    }
+}
+
+// Lazy load images
+function lazyLoadImages() {
+    const lazyImages = document.querySelectorAll('img[data-src]');
+    
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                observer.unobserve(img);
+            }
+        });
+    });
+    
+    lazyImages.forEach(img => imageObserver.observe(img));
+}
+
+// Initialize lazy loading when the page loads
+window.addEventListener('load', lazyLoadImages);

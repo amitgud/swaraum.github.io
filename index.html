@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwarAum - Official Band Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">SwarAum</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#concerts">Concerts</a></li>
+                <li><a href="#social">Social</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero">
+        <div class="hero-content">
+            <h1>SwarAum</h1>
+            <p>Experience the rhythm of the universe</p>
+            <a href="#concerts" class="btn">Upcoming Shows</a>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2>About Us</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>SwarAum is a contemporary music band that blends traditional sounds with modern beats, creating a unique musical experience. Formed in 2018, our journey has been about exploring the depths of music and connecting with audiences worldwide.</p>
+                    <p>Our music is a fusion of various genres, creating a sound that's both familiar and innovative. We believe in the power of music to transcend boundaries and bring people together.</p>
+                </div>
+                <div class="band-members">
+                    <div class="member">
+                        <img src="images/member1.jpg" alt="Band Member 1">
+                        <h4>Alex Johnson</h4>
+                        <p>Lead Vocals</p>
+                    </div>
+                    <div class="member">
+                        <img src="images/member2.jpg" alt="Band Member 2">
+                        <h4>Sarah Williams</h4>
+                        <p>Guitar</p>
+                    </div>
+                    <div class="member">
+                        <img src="images/member3.jpg" alt="Band Member 3">
+                        <h4>Mike Chen</h4>
+                        <p>Drums</p>
+                    </div>
+                    <div class="member">
+                        <img src="images/member4.jpg" alt="Band Member 4">
+                        <h4>Emma Davis</h4>
+                        <p>Bass</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concerts Section -->
+    <section id="concerts" class="section bg-light">
+        <div class="container">
+            <h2>Upcoming Concerts</h2>
+            <div class="concerts-container" id="concerts-container">
+                <!-- Concerts will be loaded from Google Sheets -->
+                <div class="loading">Loading upcoming shows...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Feeds Section -->
+    <section id="social" class="section">
+        <div class="container">
+            <h2>Follow Us</h2>
+            <div class="social-feeds">
+                <div class="social-feed">
+                    <h3><i class="fab fa-instagram"></i> Instagram</h3>
+                    <div id="instagram-feed" class="feed-container">
+                        <!-- Instagram feed will be loaded via JavaScript -->
+                    </div>
+                </div>
+                <div class="social-feed">
+                    <h3><i class="fab fa-youtube"></i> YouTube</h3>
+                    <div id="youtube-feed" class="feed-container">
+                        <!-- YouTube feed will be loaded via JavaScript -->
+                    </div>
+                </div>
+                <div class="social-feed">
+                    <h3><i class="fab fa-tiktok"></i> TikTok</h3>
+                    <div id="tiktok-feed" class="feed-container">
+                        <!-- TikTok feed will be loaded via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-light">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> info@swaraum.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-spotify"></i></a>
+                    </div>
+                </div>
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 SwarAum. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/dotorg-devrel/spreadsheets/client/sheet2data.js"></script>
+    <!-- Load environment variables -->
+    <script src="env.js"></script>
+    <script src="js/load-env.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
