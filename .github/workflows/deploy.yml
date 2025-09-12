@@ -2,11 +2,17 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]  # Change this to your default branch if it's not 'main'
+    branches: [ main ]
   workflow_dispatch:
 
+# Set the permissions for the GITHUB_TOKEN
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -18,7 +24,7 @@ jobs:
       with:
         node-version: '16'
         
-    - name: Create and copy env.js
+    - name: Create env.js
       run: |
         # Create env.js in the root directory
         echo "window._env_ = {
@@ -32,11 +38,7 @@ jobs:
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
+        branch: main
         folder: .
-        branch: gh-pages  # Or your GitHub Pages branch
         clean: true
-        clean-exclude: |
-          CNAME
-          .nojekyll
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
