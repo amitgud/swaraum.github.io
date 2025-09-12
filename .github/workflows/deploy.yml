@@ -34,7 +34,7 @@ jobs:
           const CONFIG = {
               SHEET_ID: '${{ secrets.GOOGLE_SHEET_ID }}',
               API_KEY: '${{ secrets.GOOGLE_SHEETS_API_KEY }}',
-              SHEET_RANGE: 'A2:D10',
+              SHEET_RANGE: 'Concerts!A2:H',
               REFRESH_INTERVAL: 1800000,
               YOUTUBE: {
                   CHANNEL_ID: '${{ secrets.YOUTUBE_CHANNEL_ID }}',
