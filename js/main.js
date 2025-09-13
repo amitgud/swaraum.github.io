@@ -227,7 +227,7 @@ function createConcertCard(concert) {
         poster.loading = 'lazy';
         
         const fileId = concert.posterUrl.trim();
-        const imageUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+        const imageUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${CONFIG.API_KEY}`;
         
         poster.src = imageUrl;
         poster.alt = `${concert.title} Concert Poster`;
