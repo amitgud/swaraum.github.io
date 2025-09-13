@@ -216,6 +216,10 @@ function createConcertCard(concert) {
     const card = document.createElement('div');
     card.className = 'concert-card';
 
+    // Create poster container (top half)
+    const posterContainer = document.createElement('div');
+    posterContainer.className = 'concert-poster-container';
+
     // Create poster element
     if (concert.posterUrl && concert.posterUrl.trim() !== '') {
         const poster = document.createElement('img');
@@ -223,18 +227,10 @@ function createConcertCard(concert) {
         poster.loading = 'lazy';
         
         const fileId = concert.posterUrl.trim();
-        const imageUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${CONFIG.API_KEY}`;
+        const imageUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
         
         poster.src = imageUrl;
         poster.alt = `${concert.title} Concert Poster`;
-        
-        poster.onerror = () => {
-            // Fallback to placeholder if image fails to load
-            const placeholder = document.createElement('div');
-            placeholder.className = 'concert-poster placeholder';
-            placeholder.innerHTML = '<i class="fas fa-music"></i>';
-            card.replaceChild(placeholder, poster);
-        };
         
         // Add click event for modal
         poster.addEventListener('click', (e) => {
@@ -246,8 +242,6 @@ function createConcertCard(concert) {
                 modal.classList.add('show');
                 modalImg.src = poster.src;
                 modalImg.alt = poster.alt;
-                
-                // Prevent body scroll when modal is open
                 document.body.style.overflow = 'hidden';
             }
         });
@@ -257,29 +251,36 @@ function createConcertCard(concert) {
             const placeholder = document.createElement('div');
             placeholder.className = 'concert-poster placeholder';
             placeholder.innerHTML = '<i class="fas fa-music"></i>';
-            card.replaceChild(placeholder, poster);
+            posterContainer.replaceChild(placeholder, poster);
         };
-        card.appendChild(poster);
+        
+        posterContainer.appendChild(poster);
     } else {
         const placeholder = document.createElement('div');
         placeholder.className = 'concert-poster placeholder';
         placeholder.innerHTML = '<i class="fas fa-music"></i>';
-        card.appendChild(placeholder);
+        posterContainer.appendChild(placeholder);
     }
-
-    const details = document.createElement('div');
-    details.className = 'concert-details';
-    details.innerHTML = `
-        <div class="concert-date">${formatDate(concert.date)} ${concert.time || ''}</div>
+    
+    // Create details container (bottom half)
+    const detailsContainer = document.createElement('div');
+    detailsContainer.className = 'concert-details-container';
+    
+    // Add concert details
+    detailsContainer.innerHTML = `
         <h3 class="concert-title">${concert.title}</h3>
+        <div class="concert-date">${formatDate(concert.date)} ${concert.time || ''}</div>
         ${concert.description ? `<div class="concert-description">${concert.description}</div>` : ''}
-        ${concert.venue ? `<div class="concert-venue">${concert.venue}</div>` : ''}
-        ${concert.city ? `<div class="concert-location"><i class="fas fa-map-marker-alt"></i> ${concert.city}</div>` : ''}
+        <div class="concert-location">
+            <i class="fas fa-map-marker-alt"></i> ${[concert.venue, concert.city].filter(Boolean).join(', ')}
+        </div>
         ${concert.ticketLink && concert.ticketLink !== '#' ? 
-            `<a href="${concert.ticketLink}" class="btn ticket-link" target="_blank" rel="noopener noreferrer">Get Tickets</a>` : ''}
+            `<a href="${concert.ticketLink}" class="btn ticket-btn" target="_blank" rel="noopener">Get Tickets</a>` : ''}
     `;
-    card.appendChild(details);
-
+    
+    // Assemble the card
+    card.appendChild(posterContainer);
+    card.appendChild(detailsContainer);
     return card;
 }
 
