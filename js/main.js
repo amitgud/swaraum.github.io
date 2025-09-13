@@ -146,10 +146,16 @@ function loadConcerts() {
             // Clear loading message
             concertsContainer.innerHTML = '';
             
-            // Process each concert and create cards
+            // Get current date for comparison
+            const now = new Date();
+            
+            // Separate concerts into upcoming and past
+            const upcomingConcerts = [];
+            const pastConcerts = [];
+            
             data.values.forEach(concertData => {
-                // Assuming the columns are: Date, Time, Title, Description, Venue, City, Ticket Link, Poster URL
                 const [date, time, title, description, venue, city, ticketLink, posterId] = concertData;
+                const concertDate = new Date(`${date} ${time || '00:00'}`);
                 
                 const concert = {
                     date,
@@ -162,10 +168,71 @@ function loadConcerts() {
                     posterUrl: posterId || ''
                 };
                 
-                // Create and append concert card
-                const card = createConcertCard(concert);
-                concertsContainer.appendChild(card);
+                if (concertDate >= now) {
+                    upcomingConcerts.push(concert);
+                } else {
+                    pastConcerts.push(concert);
+                }
             });
+            
+            // Sort upcoming concerts (earliest first)
+            upcomingConcerts.sort((a, b) => 
+                new Date(`${a.date} ${a.time || '00:00'}`) - new Date(`${b.date} ${b.time || '00:00'}`)
+            );
+            
+            // Sort past concerts (most recent first)
+            pastConcerts.sort((a, b) => 
+                new Date(`${b.date} ${b.time || '00:00'}`) - new Date(`${a.date} ${a.time || '00:00'}`)
+            );
+            
+            // Create sections container
+            const sectionsContainer = document.createElement('div');
+            sectionsContainer.className = 'concert-sections';
+            
+            // Add upcoming concerts section
+            const upcomingSection = document.createElement('div');
+            upcomingSection.className = 'concert-section upcoming-concerts';
+            upcomingSection.innerHTML = '<h2>Upcoming Concerts</h2>';
+            
+            if (upcomingConcerts.length === 0) {
+                upcomingSection.innerHTML += `
+                    <div class="no-concerts">
+                        <p>No upcoming concerts scheduled at this time.</p>
+                    </div>
+                `;
+            } else {
+                const upcomingList = document.createElement('div');
+                upcomingList.className = 'concerts-list';
+                upcomingConcerts.forEach(concert => {
+                    upcomingList.appendChild(createConcertCard(concert));
+                });
+                upcomingSection.appendChild(upcomingList);
+            }
+            
+            // Add past concerts section
+            const pastSection = document.createElement('div');
+            pastSection.className = 'concert-section past-concerts';
+            pastSection.innerHTML = '<h2>Past Concerts</h2>';
+            
+            if (pastConcerts.length === 0) {
+                pastSection.innerHTML += `
+                    <div class="no-concerts">
+                        <p>No past concerts to display.</p>
+                    </div>
+                `;
+            } else {
+                const pastList = document.createElement('div');
+                pastList.className = 'concerts-list';
+                pastConcerts.forEach(concert => {
+                    pastList.appendChild(createConcertCard(concert));
+                });
+                pastSection.appendChild(pastList);
+            }
+            
+            // Add sections to container
+            sectionsContainer.appendChild(upcomingSection);
+            sectionsContainer.appendChild(pastSection);
+            concertsContainer.appendChild(sectionsContainer);
             
             // Add modal for poster display if it doesn't exist
             let modal = document.getElementById('posterModal');
@@ -202,7 +269,7 @@ function loadConcerts() {
                         closeModal();
                     }
                 });
-            };
+            }
         })
         .catch(error => {
             console.error('Error loading concerts:', error);
