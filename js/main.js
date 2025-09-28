@@ -428,20 +428,49 @@ function initializeSocialFeeds() {
 
 // Lazy load images
 function lazyLoadImages() {
-    const lazyImages = document.querySelectorAll('img[data-src]');
+    // Handle both data-src and lazy-loaded images
+    const lazyImages = document.querySelectorAll('img[data-src], img[loading="lazy"]');
     
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-                observer.unobserve(img);
-            }
+    // For band member avatars, we'll handle them separately since we're already managing their loading
+    const bandMemberAvatars = document.querySelectorAll('.band-member img');
+    
+    // Only observe non-band-member images
+    const nonBandMemberImages = Array.from(lazyImages).filter(img => !img.closest('.band-member'));
+    
+    if (nonBandMemberImages.length > 0) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    } else if (img.loading === 'lazy') {
+                        img.loading = 'eager';
+                    }
+                    observer.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '200px',
+            threshold: 0.01
         });
-    });
+        
+        nonBandMemberImages.forEach(img => {
+            if (!img.complete && img.src) {
+                img.onload = () => imageObserver.unobserve(img);
+                img.onerror = () => imageObserver.unobserve(img);
+            }
+            imageObserver.observe(img);
+        });
+    }
     
-    lazyImages.forEach(img => imageObserver.observe(img));
+    // For band member avatars, ensure they're visible
+    bandMemberAvatars.forEach(img => {
+        if (img.loading === 'lazy') {
+            img.loading = 'eager';
+        }
+    });
 }
 
 // Load band members from Google Sheets
@@ -476,12 +505,36 @@ function loadBandMembers() {
                 const memberElement = document.createElement('div');
                 memberElement.className = 'band-member';
                 
-                // Create the avatar image
                 const avatar = document.createElement('img');
                 avatar.className = 'member-avatar';
-                avatar.src = profilePic || 'images/default-avatar.png';
                 avatar.alt = name;
-                avatar.loading = 'lazy';
+                
+                // Set a placeholder initially
+                const placeholder = 'images/default-avatar.png';
+                
+                if (profilePic && profilePic.trim()) {
+                    const fileId = profilePic.trim();
+                    const imageUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${CONFIG.API_KEY}`;
+                    
+                    console.log(`Loading profile image for ${name}:`, imageUrl);
+                    
+                    // Set placeholder first
+                    avatar.src = placeholder;
+                    
+                    // Set the actual image source
+                    avatar.src = imageUrl;
+                    
+                    // Handle image loading errors
+                    avatar.onerror = () => {
+                        console.error(`Failed to load profile image for ${name}`);
+                        avatar.src = placeholder;
+                    };
+                } else {
+                    avatar.src = placeholder;
+                }
+                
+                // Set loading to eager to ensure images load immediately
+                avatar.loading = 'eager';
                 
                 // Create the info overlay
                 const info = document.createElement('div');
