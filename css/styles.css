@@ -966,17 +966,15 @@ img {
     margin-top: 50px;
 }
 
-.contact-info, .contact-form {
+.contact-info {
     flex: 1;
     min-width: 300px;
     padding: 30px;
+    text-align: center;
     background: white;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-}
-
-.contact-info {
-    margin-right: 30px;
+    margin: 0 auto;
 }
 
 .contact-info h3 {
