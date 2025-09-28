@@ -192,7 +192,6 @@ function loadConcerts() {
             // Add upcoming concerts section
             const upcomingSection = document.createElement('div');
             upcomingSection.className = 'concert-section upcoming-concerts';
-            upcomingSection.innerHTML = '<h2>Upcoming Concerts</h2>';
             
             if (upcomingConcerts.length === 0) {
                 upcomingSection.innerHTML += `

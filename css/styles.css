@@ -216,13 +216,42 @@ img {
 /* Band Members Grid */
 .band-members-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 30px;
     justify-content: center;
-    padding: 30px 20px;
+    padding: 20px 15px;
     max-width: 1200px;
     margin: 0 auto;
     align-items: start;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .band-members-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        padding: 15px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .band-members-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .band-member {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+    }
+    
+    .member-avatar {
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .band-member {
