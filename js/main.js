@@ -360,69 +360,155 @@ function formatDate(dateString) {
 // Initialize social media feeds
 function initializeSocialFeeds() {
     // Instagram Feed
-    // Note: Instagram requires an access token and special API setup
-    // This is a placeholder that you'll need to replace with actual API calls
     const instagramFeed = document.getElementById('instagram-feed');
     if (instagramFeed) {
-        // Example of how you might load Instagram posts
-        // Replace with actual Instagram API implementation
+        // Initial loading state
         instagramFeed.innerHTML = `
-            <div class="social-post">
-                <p>Follow us on <a href="https://www.instagram.com/swaraum" target="_blank">Instagram</a> to see our latest updates!</p>
-                <!-- Instagram posts will be loaded here via JavaScript -->
+            <div class="instagram-feed">
+                <h3>Instagram Feed</h3>
+                <div class="loading">Loading Instagram posts...</div>
             </div>
         `;
         
-        // Load Instagram posts here using Instagram Basic Display API
-        // You'll need to register your app at https://developers.facebook.com/
+        // This is a placeholder - replace with actual Instagram API implementation
+        // You'll need to:
+        // 1. Create a Meta Developer account at https://developers.facebook.com/
+        // 2. Create a new app and add Instagram Basic Display
+        // 3. Get an access token
+        
+        // Example of how to fetch Instagram posts (uncomment and replace with your actual implementation)
+        /*
+        const INSTAGRAM_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN';
+        const INSTAGRAM_USER_ID = 'YOUR_USER_ID';
+        
+        fetch(`https://graph.instagram.com/${INSTAGRAM_USER_ID}/media?fields=id,caption,media_url,permalink,media_type&access_token=${INSTAGRAM_ACCESS_TOKEN}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.data && data.data.length > 0) {
+                    const posts = data.data.slice(0, 6); // Show first 6 posts
+                    let html = `
+                        <div class="instagram-feed">
+                            <h3>Latest from Instagram</h3>
+                            <div class="instagram-posts">
+                                ${posts.map(post => `
+                                    <a href="${post.permalink}" target="_blank" class="instagram-post">
+                                        <img src="${post.media_url}" alt="${post.caption || 'Instagram post'}" loading="lazy">
+                                    </a>
+                                `).join('')}
+                            </div>
+                            <p class="follow-link">
+                                <a href="https://www.instagram.com/swaraum.band/" target="_blank" class="btn">
+                                    <i class="fab fa-instagram"></i> Follow Us
+                                </a>
+                            </p>
+                        </div>
+                    `;
+                    instagramFeed.innerHTML = html;
+                } else {
+                    showError(instagramFeed, 'No Instagram posts found.');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading Instagram feed:', error);
+                showError(instagramFeed, 'Unable to load Instagram feed. Please try again later.');
+            });
+        */
+        
+        // For now, show a link to the Instagram profile
+        instagramFeed.innerHTML = `
+            <div class="instagram-feed">
+                <h3>Follow Us on Instagram</h3>
+                <div class="instagram-placeholder">
+                    <i class="fab fa-instagram"></i>
+                    <p>Check out our latest posts on Instagram</p>
+                    <a href="https://www.instagram.com/swaraum.band/" target="_blank" class="btn">
+                        <i class="fab fa-instagram"></i> @swaraum.band
+                    </a>
+                </div>
+            </div>
+        `;
     }
     
     // YouTube Feed
     const youtubeFeed = document.getElementById('youtube-feed');
     if (youtubeFeed) {
-        // Example of how you might load YouTube videos
-        // Replace with actual YouTube API implementation
+        // Initial loading state
         youtubeFeed.innerHTML = `
-            <div class="youtube-video">
-                <div class="video-container">
-                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/VIDEO_ID" 
-                            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen></iframe>
+            <div class="youtube-feed">
+                <h3>YouTube Channel</h3>
+                <div class="loading">Loading latest videos...</div>
+            </div>
+        `;
+        
+        // This is a placeholder - replace with actual YouTube Data API implementation
+        // You'll need to:
+        // 1. Enable YouTube Data API v3 in Google Cloud Console
+        // 2. Create API credentials
+        // 3. Replace YOUTUBE_API_KEY with your actual API key
+        // 4. Replace CHANNEL_ID with your channel ID
+        
+        /*
+        const YOUTUBE_API_KEY = 'YOUR_API_KEY';
+        const CHANNEL_ID = 'UCYOUR_CHANNEL_ID'; // Replace with SwarAum's channel ID
+        
+        // Fetch latest videos from the channel
+        fetch(`https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=3`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.items && data.items.length > 0) {
+                    const videos = data.items.filter(item => item.id.kind === 'youtube#video');
+                    let html = `
+                        <div class="youtube-feed">
+                            <h3>Latest Videos</h3>
+                            <div class="youtube-videos">
+                                ${videos.map(video => `
+                                    <div class="youtube-video">
+                                        <div class="video-container">
+                                            <iframe 
+                                                width="100%" 
+                                                height="200" 
+                                                src="https://www.youtube.com/embed/${video.id.videoId}" 
+                                                frameborder="0" 
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                        <h4>${video.snippet.title}</h4>
+                                        <p class="video-description">${video.snippet.description.substring(0, 100)}...</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <p class="subscribe-link">
+                                <a href="https://www.youtube.com/@SwarAum" target="_blank" class="btn">
+                                    <i class="fab fa-youtube"></i> Subscribe to Our Channel
+                                </a>
+                            </p>
+                        </div>
+                    `;
+                    youtubeFeed.innerHTML = html;
+                } else {
+                    showError(youtubeFeed, 'No videos found on the channel.');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading YouTube feed:', error);
+                showError(youtubeFeed, 'Unable to load YouTube videos. Please try again later.');
+            });
+        */
+        
+        // For now, show a direct link to the YouTube channel
+        youtubeFeed.innerHTML = `
+            <div class="youtube-feed">
+                <h3>Our YouTube Channel</h3>
+                <div class="youtube-placeholder">
+                    <i class="fab fa-youtube"></i>
+                    <p>Check out our latest performances and videos on YouTube</p>
+                    <a href="https://www.youtube.com/@SwarAum" target="_blank" class="btn">
+                        <i class="fab fa-youtube"></i> @SwarAum
+                    </a>
                 </div>
-                <p>Check out our latest performance!</p>
             </div>
-            <p>Subscribe to our <a href="https://www.youtube.com/channel/CHANNEL_ID" target="_blank">YouTube channel</a> for more videos.</p>
         `;
-        
-        // Load YouTube videos here using YouTube Data API
-        // You'll need to get an API key from Google Cloud Console
-    }
-    
-    // TikTok Feed
-    const tiktokFeed = document.getElementById('tiktok-feed');
-    if (tiktokFeed) {
-        // TikTok embed example
-        // Note: TikTok requires special embedding or API access
-        tiktokFeed.innerHTML = `
-            <div class="tiktok-embed" style="max-width: 300px; margin: 0 auto;" 
-                 data-video-id="VIDEO_ID" 
-                 data-embed-from="embed" 
-                 data-embed-type="video">
-                <section>
-                    <a href="https://www.tiktok.com/@swaraum/video/VIDEO_ID" target="_blank">
-                        Watch on TikTok</a>
-                </section>
-            </div>
-            <p>Follow us on <a href="https://www.tiktok.com/@swaraum" target="_blank">TikTok</a> for short clips and behind-the-scenes!</p>
-        `;
-        
-        // Load TikTok script if not already loaded
-        if (!document.getElementById('tiktok-script')) {
-            const script = document.createElement('script');
-            script.id = 'tiktok-script';
-            script.src = 'https://www.tiktok.com/embed.js';
-            document.body.appendChild(script);
-        }
     }
 }
 

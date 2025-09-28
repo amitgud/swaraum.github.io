@@ -6,7 +6,7 @@ A responsive single-page website for the band SwarAum, featuring an about sectio
 
 - **Responsive Design**: Works on all device sizes
 - **Upcoming Concerts**: Powered by Google Sheets for easy updates
-- **Social Media Integration**: Display feeds from Instagram, YouTube, and TikTok
+- **Social Media Integration**: Display feeds from Instagram and YouTube
 - **Contact Form**: For fan inquiries and booking
 - **Modern UI/UX**: Clean, modern design with smooth animations
 
@@ -16,7 +16,7 @@ A responsive single-page website for the band SwarAum, featuring an about sectio
 
 - A web server to host the website (or use GitHub Pages)
 - A Google Cloud Platform account for Google Sheets API
-- Social media developer accounts for Instagram, YouTube, and TikTok APIs
+- Social media developer accounts for Instagram and YouTube APIs
 
 ### Google Sheets Setup
 
@@ -58,11 +58,6 @@ A responsive single-page website for the band SwarAum, featuring an about sectio
 2. Enable YouTube Data API v3
 3. Create API credentials
 4. Update the YouTube feed section in `js/main.js`
-
-#### TikTok
-1. Apply for TikTok Developer access at [TikTok Developers](https://developers.tiktok.com/)
-2. Create an app to get API credentials
-3. Update the TikTok feed section in `js/main.js`
 
 ### Deployment
 
